@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MoveScript : MonoBehaviour //This script doesnt just contain move elements because I used the same script for a bunch of things including checkpoints
 {
-
+    public ParticleSystem dust;
+    
     private float horizontal;
     public int speed;
     public int jumpPower;
@@ -119,12 +120,14 @@ public class MoveScript : MonoBehaviour //This script doesnt just contain move e
         if (Input.GetKeyDown(KeyCode.W)) //if player presses jump
         {
             if ((coyoteTimeCounter>0f && !doubleJump) && jumpBufferCounter > 0f) {
+                CreateDust();
                 jumpSoundEffect.Play(); // play jump sound affect
                 rb.velocity = Vector2.up * jumpPower; // move velocity of player upward
                 doubleJump = !doubleJump; // set double jump-able to false
                 jumpBufferCounter = 0f; 
             }
             if (!IsGrounded() && doubleJump && jumpBufferCounter > 0f) {
+                CreateDust();
                 rb.velocity = Vector2.up * jumpPower; // jump
                 jumpSoundEffect.Play();
                 doubleJump = false;
@@ -191,6 +194,7 @@ public class MoveScript : MonoBehaviour //This script doesnt just contain move e
         }
         else if (wallDoubleJump && Input.GetKeyDown(KeyCode.W) && !IsGrounded())
         {
+            CreateDust();
             jumpSoundEffect.Play();
             rb.velocity = Vector2.up * jumpPower;
             wallDoubleJump = false;
@@ -206,6 +210,7 @@ public class MoveScript : MonoBehaviour //This script doesnt just contain move e
 
         if (Input.GetKeyDown(KeyCode.W) && wallJumpingCounter > 0f)
         {
+            CreateDust();
             isWallJumping = true;
             jumpSoundEffect.Play();
             rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
@@ -232,6 +237,7 @@ public class MoveScript : MonoBehaviour //This script doesnt just contain move e
     {
         if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
         {
+            CreateDust(); // dust
             isFacingRight = !isFacingRight;
             Vector3 localScale = transform.localScale;
             localScale.x *= -1f;
@@ -291,5 +297,10 @@ public class MoveScript : MonoBehaviour //This script doesnt just contain move e
             Player1WinScreen.SetActive(true);
             zeroVelocity = true;
         }
+    }
+
+    void CreateDust()
+    {
+        dust.Play();
     }
 }
